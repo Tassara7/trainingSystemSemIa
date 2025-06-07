@@ -4,15 +4,16 @@ import io.github.tassara7.trainingsystem.model.Workout;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional; // Importe a classe Optional
 import java.util.stream.Collectors;
 
 public class WorkoutFilter {
 
-    public static Workout filterByDate(List<Workout> workouts, LocalDate date) {
+    // CORREÇÃO: O método agora retorna Optional<Workout>
+    public static Optional<Workout> filterByDate(List<Workout> workouts, LocalDate date) {
         return workouts.stream()
                 .filter(workout -> date.equals(workout.getDate()))
-                .findFirst()
-                .orElse(null);
+                .findFirst(); // Removemos o .orElse(null) para retornar o Optional
     }
 
 
@@ -45,6 +46,4 @@ public class WorkoutFilter {
                 .collect(Collectors.toList());
 
     }
-
-
 }

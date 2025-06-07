@@ -1,0 +1,55 @@
+Label {
+    -fx-text-fill: #d6d6d6;
+    -fx-effect: dropshadow(three-pass-box, #151515, 10, 0, 0, 3);
+}
+
+#confirmWorkoutLabel:hover {
+
+    -fx-scale-x: 1.05; /* Cresce 5% horizontalmente */
+    -fx-scale-y: 1.05; /* Cresce 5% verticalmente */
+}
+
+#restDayLabel:hover {
+
+    -fx-scale-x: 1.05; /* Cresce 5% horizontalmente */
+    -fx-scale-y: 1.05; /* Cresce 5% verticalmente */
+}
+
+ToggleButton {
+    -fx-background-color: rgba(0, 0, 0, 0.27);
+    -fx-text-fill: #e3e3e3;
+}
+
+ToggleButton:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.27);
+    -fx-text-fill: #e3e3e3;
+    -fx-translate-y: 3px;
+}
+
+ToggleButton:selected {
+    -fx-background-color: #172b40;
+    -fx-text-fill: #e3e3e3;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 3);
+}
+
+#deleteButton{
+    -fx-background-color: #172b40;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 3);
+}
+
+#deleteButton:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+#deleteButton:pressed{
+    -fx-background-color: #80040b;
+    -fx-translate-y: 3px;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 6);
+}
+
+
+
+
+
+

@@ -1,0 +1,174 @@
+
+#exit, #config {
+    -fx-effect: dropshadow(three-pass-box, #151515, 2, 0, 0, 1);
+}
+#exit:pressed, #config:pressed {
+    -fx-translate-y: 3px;
+}
+
+.label {
+    -fx-text-fill: #ffffff
+}
+
+.day-pane:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.day-label {
+    -fx-text-fill: #f1f1f1;
+    -fx-font-size: 20px;
+}
+
+.info-pane {
+    -fx-background-image: url("/io/github/tassara7/trainingsystem/images/infoPane.png");
+    -fx-padding: 10px 0px 10px 0px; /* Topo, direita, baixo, esquerda */
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 100%;  /* Força a imagem a preencher 100% da largura e altura */
+    -fx-background-position: center center;
+    -fx-background-insets: 0; /* Distância que a imagem começa das bordas do container */
+    -fx-background-radius: 15px;
+
+}
+
+.chart-pie-label {
+    -fx-fill: #e8e8e8; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */
+}
+
+
+#yearLabel:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+
+#nextMonthLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#previousMonthLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#nextYearLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#previousYearLabel:pressed{
+    -fx-translate-y: 3px;
+}
+
+
+/*----------------------OUTRA TELA------------------------------*/
+
+
+#newWorkoutRootPane {
+    -fx-background-image: url("../backgrounds/beach.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+Label {
+    -fx-text-fill: #eaeaea;
+    -fx-effect: dropshadow(three-pass-box, #151515, 10, 0, 0, 3);
+}
+
+#confirmWorkoutLabel:hover {
+
+    -fx-scale-x: 1.05; /* Cresce 5% horizontalmente */
+    -fx-scale-y: 1.05; /* Cresce 5% verticalmente */
+}
+
+#restDayLabel:hover {
+
+    -fx-scale-x: 1.05; /* Cresce 5% horizontalmente */
+    -fx-scale-y: 1.05; /* Cresce 5% verticalmente */
+}
+
+ToggleButton {
+    -fx-background-color: rgba(0, 0, 0, 0.27);
+    -fx-text-fill: #e3e3e3;
+}
+
+ToggleButton:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.27);
+    -fx-text-fill: #e3e3e3;
+    -fx-translate-y: 3px;
+}
+
+ToggleButton:selected {
+    -fx-background-color: #15590c;
+    -fx-text-fill: #e3e3e3;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 3);
+}
+
+#deleteButton{
+    -fx-background-color: #a10510;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 3);
+}
+
+#deleteButton:pressed{
+    -fx-background-color: #80040b;
+    -fx-translate-y: 3px;
+    -fx-effect: dropshadow(three-pass-box, #151515, 20, 0, 0, 6);
+}
+
+.date-picker{
+    -fx-background-color: transparent; /* Se desejar fundo transparente */
+    -fx-border-color: transparent;     /* Borda transparente */
+    -fx-border-width: 0;               /* Remove a largura da borda */
+}
+
+
+
+
+/* Estiliza o campo de entrada do DatePicker */
+.date-picker .text-field {
+    -fx-background-color: #0d1b2a;  /* Azul escuro */
+    -fx-text-fill: #ffffff;  /* Texto branco */
+    -fx-font-size: 14px;
+    -fx-border-color: #415a77;  /* Azul mais claro */
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+    -fx-font-family: "Arial", sans-serif;
+}
+
+/* Altera a aparência do botão de seta */
+.date-picker .arrow-button {
+    -fx-background-color: #1b263b;
+    -fx-border-color: #778da9;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+/* Muda a cor do ícone da seta */
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #ffffff;
+}
+
+/* Personaliza o popup do calendário */
+.date-picker-popup {
+    -fx-background-color: #0d1b2a;
+    -fx-border-color: #415a77;
+    -fx-border-radius: 5;
+}
+
+/* Estiliza as células do calendário */
+.date-picker .calendar .date-cell {
+    -fx-background-color: #1b263b;
+    -fx-text-fill: #000000;
+}
+
+/* Estilo quando o mouse passa por cima */
+.date-picker .calendar .date-cell:hover {
+    -fx-background-color: #415a77;
+}
+
+/* Célula selecionada */
+.date-picker .calendar .date-cell:selected {
+    -fx-background-color: #e0e1dd;
+    -fx-text-fill: #000000;
+}
+
+
+
+
+
+

@@ -1,0 +1,58 @@
+
+#exit, #config {
+    -fx-effect: dropshadow(three-pass-box, #151515, 2, 0, 0, 1);
+}
+#exit:pressed, #config:pressed {
+    -fx-translate-y: 3px;
+}
+
+.label {
+    -fx-text-fill: #d6d6d6
+}
+
+.day-pane:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.day-label {
+    -fx-font-size: 20px;
+}
+
+.info-pane {
+    -fx-background-image: url("/io/github/tassara7/trainingsystem/images/infoPane.png");
+    -fx-padding: 10px 0px 10px 0px; /* Topo, direita, baixo, esquerda */
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 100%;  /* Força a imagem a preencher 100% da largura e altura */
+    -fx-background-position: center center;
+    -fx-background-insets: 0; /* Distância que a imagem começa das bordas do container */
+    -fx-background-radius: 15px;
+
+}
+
+.chart-pie-label {
+    -fx-fill: #c8c8c8; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */
+}
+
+
+#yearLabel:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+#nextMonthLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#previousMonthLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#nextYearLabel:pressed{
+    -fx-translate-y: 3px;
+}
+#previousYearLabel:pressed{
+    -fx-translate-y: 3px;
+}
+
+
+
+

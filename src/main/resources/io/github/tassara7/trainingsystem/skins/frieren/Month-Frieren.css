@@ -1,0 +1,92 @@
+/* Ícones de Config e Sair */
+#exit, #config {
+    -fx-effect: dropshadow(three-pass-box, rgba(21, 21, 21, 0.7), 2, 0, 0, 1);
+}
+#exit:pressed, #config:pressed {
+    -fx-translate-y: 3px;
+}
+#exit:hover, #config:hover {
+    -fx-effect: dropshadow(gaussian, #FBBF24, 6, 0.4, 0, 0); /* Brilho dourado suave */
+}
+
+/* Títulos e textos principais */
+.label {
+    -fx-text-fill: #F9FAFB; /* Branco gelo */
+    -fx-effect: dropshadow(gaussian, rgba(30, 41, 59, 0.6), 4, 0.5, 1, 1);
+}
+
+/* Dias da semana (S M T W...) */
+.day-label {
+    -fx-text-fill: #E2E8F0; /* Cinza claro suave, melhor legibilidade */
+}
+
+/* Efeito de hover nos dias */
+.day-pane:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Painel de informações (fundo de imagem) */
+.info-pane {
+    -fx-background-image: url("/io/github/tassara7/trainingsystem/images/infoPane.png");
+    -fx-padding: 10px 0px 10px 0px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;
+    -fx-background-insets: 0;
+    -fx-background-radius: 15px;
+}
+
+/* Labels do gráfico de pizza */
+.chart-pie-label {
+    -fx-fill: #E8E8E8;
+    -fx-effect: dropshadow(gaussian, rgba(30, 41, 59, 0.7), 3, 0.8, 1, 1);
+    -fx-font-weight: bold;
+}
+
+#yearLabel:hover{
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+
+/* Botões de navegação de mês/ano */
+#nextMonthLabel:pressed,
+#previousMonthLabel:pressed,
+#nextYearLabel:pressed,
+#previousYearLabel:pressed {
+    -fx-translate-y: 3px;
+}
+
+/* =========================
+   Cores dos dias do calendário
+   ========================= */
+
+/* Dia sem treino */
+.day-empty {
+    -fx-background-color: #B0BECF; /* Cinza claro suave */
+}
+
+/* Dia com treino */
+.day-training {
+    -fx-background-color: #094AB4; /* Azul forte (saturado) */
+}
+
+/* Dia atual */
+.day-today {
+    -fx-background-color: #F9FAFB;
+    -fx-border-color: #FBBF24;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, #FBBF24, 6, 0.4, 0, 0);
+}
+
+/* Dia selecionado */
+.day-selected {
+    -fx-background-color: #2563EB; /* Azul mais intenso */
+    -fx-border-color: #F9FAFB;
+    -fx-border-width: 2px;
+}
+
+.day-label {
+    -fx-font-size: 20px;
+}

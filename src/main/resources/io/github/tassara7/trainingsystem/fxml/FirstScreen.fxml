@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.tassara7.trainingsystem.controller.FirstScreenController">
+   <children>
+      <TextField fx:id="nameTextField" alignment="CENTER" layoutX="693.0" layoutY="473.0" prefHeight="93.0" prefWidth="549.0">
+         <font>
+            <Font name="Century Gothic" size="47.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </TextField>
+      <Label fx:id="nameLabel" alignment="CENTER" layoutX="824.0" layoutY="369.0" prefHeight="70.0" prefWidth="285.0" text="YOUR NAME">
+         <font>
+            <Font name="Century Gothic" size="47.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

@@ -1,0 +1,15 @@
+#rootPane {
+    -fx-background-image: url("../images/FirstScreen.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+#nameLabel {
+    -fx-text-fill: #eaeaea;
+}
+
+TextField {
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+}
+

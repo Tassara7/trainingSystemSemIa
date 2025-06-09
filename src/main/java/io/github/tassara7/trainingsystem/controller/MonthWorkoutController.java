@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     private User currentUser;
     private LocalDate currentDate;
     private CalendarAnimation calendarAnimation;
+    private WorkoutHoverDetailManager detailManager;
 
     @FXML
     public Pane rootPane;
@@ -77,6 +79,7 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     @Override
     public void setUser(User user) {
         this.currentUser = user;
+        this.detailManager = new WorkoutHoverDetailManager(infoPane, currentUser);
 
         // Agora que temos o usuário, podemos popular a tela com segurança
         rootPane.setStyle(WallpaperUtil.buildWallpaperStyle());
@@ -86,7 +89,6 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     // Este método foi renomeado para refletir que só configura partes estáticas
     private void setupStaticUIComponents() {
         infoPane.setVisible(false);
-        calendar.setOnMouseExited(event -> infoPane.setVisible(false));
 
         String todayString = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM"));
         todayLabel.setText(todayString);
@@ -104,16 +106,21 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
             currentDate = LocalDate.now();
         }
 
+        List<Workout> monthWorkouts = WorkoutFilter.filterByMonthAndYear(
+                currentUser.getWorkouts(),
+                currentDate.getMonthValue(),
+                currentDate.getYear()
+        );
+
+
         yearLabel.setText(String.valueOf(currentDate.getYear()));
         monthLabel.setText(String.valueOf(currentDate.getMonth()));
-        updateCalendar();
-        updatePieChart();
+        updateCalendar(monthWorkouts);
+        updatePieChart(monthWorkouts);
     }
 
-    private void updateCalendar() {
-        // Esta chamada agora é segura, pois `currentUser` já foi definido
-        Set<LocalDate> workoutDays = WorkoutFilter.filterByMonthAndYear(currentUser.getWorkouts(), currentDate.getMonthValue(), currentDate.getYear())
-                .stream()
+    private void updateCalendar(List<Workout> monthWorkouts) {
+        Set<LocalDate> workoutDays = monthWorkouts.stream()
                 .map(Workout::getDate)
                 .collect(Collectors.toSet());
 
@@ -139,8 +146,14 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     }
 
     private void updateCalendarWithAnimation() {
-        Set<LocalDate> workoutDays = WorkoutFilter.filterByMonthAndYear(currentUser.getWorkouts(), currentDate.getMonthValue(), currentDate.getYear())
-                .stream()
+        // Filtra a lista UMA VEZ
+        List<Workout> monthWorkouts = WorkoutFilter.filterByMonthAndYear(
+                currentUser.getWorkouts(),
+                currentDate.getMonthValue(),
+                currentDate.getYear()
+        );
+
+        Set<LocalDate> workoutDays = monthWorkouts.stream()
                 .map(Workout::getDate)
                 .collect(Collectors.toSet());
 
@@ -148,18 +161,16 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         newCalendarView.setDaySelectionListener(this);
 
         calendarAnimation.animateCalendarTransition(newCalendarView);
-        // A animação já cuida da parte visual, mas atualizamos os labels
+
         yearLabel.setText(String.valueOf(currentDate.getYear()));
         monthLabel.setText(String.valueOf(currentDate.getMonth()));
-        updatePieChart();
+
+        // Usa a lista já filtrada
+        updatePieChart(monthWorkouts);
     }
 
-    private void updatePieChart() {
-        PieChartView.updatePieChart(pieChart,
-                WorkoutFilter.filterByMonthAndYear(
-                        currentUser.getWorkouts(),
-                        currentDate.getMonthValue(),
-                        currentDate.getYear()));
+    private void updatePieChart(List<Workout> monthWorkouts) {
+        PieChartView.updatePieChart(pieChart, monthWorkouts);
     }
 
     @Override
@@ -193,23 +204,15 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
 
     @Override
     public void onDaySelected(LocalDate date) {
-        WorkoutFilter.filterByDate(currentUser.getWorkouts(), date)
-                .ifPresent(this::openWorkoutDetails);
+       detailManager.handleDaySelected(date);
     }
 
     @Override
     public void onDayDeselected(LocalDate date) {
-        infoPane.setVisible(false);
+        detailManager.handleDayDeselected();
     }
 
-    private void openWorkoutDetails(Workout workout) {
-        WorkoutInfo workoutInfo = new WorkoutInfo(workout);
-        workoutInfo.showInfo();
 
-        infoPane.getChildren().clear();
-        infoPane.getChildren().add(workoutInfo);
-        infoPane.setVisible(true);
-    }
 
     @Override
     public void onSkinChanged() {

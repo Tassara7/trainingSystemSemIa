@@ -29,6 +29,9 @@
          <font>
             <Font name="Century Gothic" size="96.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Label>
       <Label fx:id="monthLabel" alignment="CENTER" layoutX="172.0" layoutY="196.0" prefHeight="125.0" prefWidth="514.0" text="MONTH">
          <font>

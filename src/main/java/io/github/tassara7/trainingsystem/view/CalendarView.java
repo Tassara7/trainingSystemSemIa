@@ -72,6 +72,7 @@ public class CalendarView extends GridPane {
             StackPane dayPane = getDayCircle(currentDate, day, circleSize, fontSize);
             dayPane.getStyleClass().add("day-pane");
 
+
             dayPane.setOnMouseClicked(e -> {
                 if (daySelectionListener != null) {
                     try {

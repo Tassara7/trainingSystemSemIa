@@ -6,3 +6,7 @@
     -fx-font-size: 10px;
 
 }
+
+.chart-pie-label {
+    -fx-fill: #c8c8c8; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */
+}

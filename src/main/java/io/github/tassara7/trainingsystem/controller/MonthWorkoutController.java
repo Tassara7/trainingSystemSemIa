@@ -50,10 +50,13 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     private WorkoutHoverDetailManager detailManager;
 
 
+
     public void initialize() {
         // 1. Cria as dependências e os gerentes
         CalendarAnimation calendarAnimation = new CalendarAnimation(calendar);
         this.calendarManager = new CalendarManager(calendar, this, calendarAnimation);
+
+
 
         // 2. Registra listeners
         SkinManager.registerListener(this);
@@ -84,7 +87,7 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
 
         exit.setOnMouseClicked(e -> ((Stage) exit.getScene().getWindow()).close());
         config.setOnMouseClicked(e -> navigateTo(ScreenStorage.CONFIGSCREEN, true));
-        year.setOnMouseClicked(e -> navigateTo(ScreenStorage.YEARWORKOUTSCREEN, false));
+        yearLabel.setOnMouseClicked(e -> navigateTo(ScreenStorage.YEARWORKOUTSCREEN, false));
 
         todayLabel.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM")));
     }

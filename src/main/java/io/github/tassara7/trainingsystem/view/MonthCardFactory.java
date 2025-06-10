@@ -2,6 +2,7 @@ package io.github.tassara7.trainingsystem.view;
 
 import io.github.tassara7.trainingsystem.model.Workout;
 import javafx.geometry.Pos;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -14,34 +15,31 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Uma fábrica para criar o componente visual completo para um único mês na tela do ano.
- */
 public class MonthCardFactory {
 
     private final VBox monthContainer;
 
-    public MonthCardFactory(int year, int month, List<Workout> monthWorkouts, List<Workout> yearWorkouts, PieChart mainPieChart) {
+    /**
+     * O construtor agora também aceita o BarChart principal da tela.
+     */
+    public MonthCardFactory(int year, int month, List<Workout> monthWorkouts, List<Workout> yearWorkouts,
+                            PieChart mainPieChart, BarChart<String, Number> mainBarChart) {
 
-        // 1. Cria os componentes visuais
         CalendarView calendarView = createCalendarView(year, month, monthWorkouts);
         Label monthLabel = createMonthLabel(year, month);
 
-        // 2. Agrupa os componentes em um VBox
         this.monthContainer = new VBox(5, monthLabel, calendarView);
         this.monthContainer.setAlignment(Pos.CENTER);
 
-        // 3. Configura todas as interações no VBox
-        setupInteractions(monthWorkouts, yearWorkouts, mainPieChart, year, month);
+        // Configura as interações, agora passando o BarChart também
+        setupInteractions(monthWorkouts, yearWorkouts, mainPieChart, mainBarChart, year, month);
     }
 
-    /**
-     * Retorna o componente VBox final e pronto para ser adicionado à tela.
-     */
     public VBox getMonthCard() {
         return monthContainer;
     }
 
+    // ... (métodos createCalendarView e createMonthLabel continuam iguais)
     private CalendarView createCalendarView(int year, int month, List<Workout> monthWorkouts) {
         Set<LocalDate> workoutDays = monthWorkouts.stream()
                 .map(Workout::getDate)
@@ -57,10 +55,15 @@ public class MonthCardFactory {
         return label;
     }
 
-    private void setupInteractions(List<Workout> monthWorkouts, List<Workout> yearWorkouts, PieChart mainPieChart, int year, int month) {
+
+    /**
+     * O método de interações agora também atualiza o BarChart.
+     */
+    private void setupInteractions(List<Workout> monthWorkouts, List<Workout> yearWorkouts,
+                                   PieChart mainPieChart, BarChart<String, Number> mainBarChart, int year, int month) {
+
         HoverZoomEffect hoverZoom = new HoverZoomEffect(this.monthContainer, 1.05);
 
-        // Evento de clique para navegar
         this.monthContainer.setOnMouseClicked(event -> {
             try {
                 LocalDate dateOfMonth = LocalDate.of(year, month, 1);
@@ -70,16 +73,18 @@ public class MonthCardFactory {
             }
         });
 
-        // Evento para mostrar dados do mês
+        // Evento para mostrar dados do mês no PieChart E no BarChart
         this.monthContainer.setOnMouseEntered(event -> {
             hoverZoom.playZoomIn();
             PieChartView.updatePieChart(mainPieChart, monthWorkouts);
+            BarChartManager.updateChartWithWorkouts(mainBarChart, monthWorkouts); // Atualiza o BarChart
         });
 
-        // Evento para reverter para os dados do ano
+        // Evento para reverter para os dados do ano no PieChart E no BarChart
         this.monthContainer.setOnMouseExited(event -> {
             hoverZoom.playZoomOut();
             PieChartView.updatePieChart(mainPieChart, yearWorkouts);
+            BarChartManager.updateChartWithWorkouts(mainBarChart, yearWorkouts); // Reverte o BarChart
         });
     }
 }

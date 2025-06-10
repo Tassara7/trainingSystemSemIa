@@ -8,5 +8,25 @@
 }
 
 .chart-pie-label {
-    -fx-fill: #c8c8c8; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */
+    -fx-fill: #ededed; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */
+}
+
+
+.axis-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+    -fx-text-fill: #e3e3e3;
+}
+
+.category-axis .tick-label {
+    -fx-font-family: "Arial";
+    -fx-font-size: 11px;
+    -fx-fill: #e0e0e0;  /* << TROQUE PELA COR DESEJADA */
+}
+
+/* Use esta para estilizar os NÚMEROS no eixo Y (NumberAxis), se quiser */
+.number-axis .tick-label {
+    -fx-font-family: "Arial";
+    -fx-font-size: 10px;
+    -fx-fill: #cccccc; /* Pode ser a mesma cor ou uma diferente */
 }

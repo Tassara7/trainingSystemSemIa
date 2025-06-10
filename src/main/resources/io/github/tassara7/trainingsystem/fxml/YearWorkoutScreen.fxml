@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -13,12 +16,12 @@
 
 <Pane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="918.0" prefWidth="1632.0" styleClass="root" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.tassara7.trainingsystem.controller.YearWorkoutController">
    <children>
-      <Label fx:id="yearLabel" layoutX="348.0" layoutY="14.0" prefHeight="125.0" prefWidth="318.0" text="YEAR">
+      <Label fx:id="yearLabel" alignment="CENTER" layoutX="359.0" layoutY="3.0" prefHeight="125.0" prefWidth="318.0" text="YEAR">
          <font>
             <Font name="Century Gothic" size="96.0" />
          </font>
       </Label>
-      <Label fx:id="nextYearLabel" layoutX="599.0" layoutY="29.0" prefHeight="64.0" prefWidth="59.0" text="&gt;">
+      <Label fx:id="nextYearLabel" layoutX="635.0" layoutY="16.0" prefHeight="64.0" prefWidth="59.0" text="&gt;">
          <font>
             <Font size="66.0" />
          </font>
@@ -26,7 +29,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Label>
-      <Label fx:id="previousYearLabel" layoutX="296.0" layoutY="29.0" prefHeight="64.0" prefWidth="59.0" text="&lt;">
+      <Label fx:id="previousYearLabel" layoutX="359.0" layoutY="18.0" prefHeight="64.0" prefWidth="59.0" text="&lt;">
          <font>
             <Font size="66.0" />
          </font>
@@ -64,5 +67,13 @@
         </rowConstraints>
       </GridPane>
       <PieChart fx:id="pieChart" layoutX="985.0" layoutY="112.0" prefHeight="491.0" prefWidth="564.0" />
+      <BarChart fx:id="barChart" layoutX="1049.0" layoutY="623.0" prefHeight="256.0" prefWidth="427.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
    </children>
 </Pane>

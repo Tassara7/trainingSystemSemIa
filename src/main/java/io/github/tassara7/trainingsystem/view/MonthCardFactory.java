@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MonthCardFactory {
@@ -23,7 +24,7 @@ public class MonthCardFactory {
      * O construtor agora também aceita o BarChart principal da tela.
      */
     public MonthCardFactory(int year, int month, List<Workout> monthWorkouts, List<Workout> yearWorkouts,
-                            PieChart mainPieChart, BarChart<String, Number> mainBarChart) {
+                            PieChart mainPieChart,  Consumer<List<Workout>> statsUpdater) {
 
         CalendarView calendarView = createCalendarView(year, month, monthWorkouts);
         Label monthLabel = createMonthLabel(year, month);
@@ -32,7 +33,7 @@ public class MonthCardFactory {
         this.monthContainer.setAlignment(Pos.CENTER);
 
         // Configura as interações, agora passando o BarChart também
-        setupInteractions(monthWorkouts, yearWorkouts, mainPieChart, mainBarChart, year, month);
+        setupInteractions(monthWorkouts, yearWorkouts, mainPieChart, statsUpdater, year, month);
     }
 
     public VBox getMonthCard() {
@@ -59,8 +60,10 @@ public class MonthCardFactory {
     /**
      * O método de interações agora também atualiza o BarChart.
      */
+    // Em: src/main/java/io/github/tassara7/trainingsystem/view/MonthCardFactory.java
+
     private void setupInteractions(List<Workout> monthWorkouts, List<Workout> yearWorkouts,
-                                   PieChart mainPieChart, BarChart<String, Number> mainBarChart, int year, int month) {
+                                   PieChart mainPieChart, Consumer<List<Workout>> statsUpdater, int year, int month) {
 
         HoverZoomEffect hoverZoom = new HoverZoomEffect(this.monthContainer, 1.05);
 
@@ -73,18 +76,44 @@ public class MonthCardFactory {
             }
         });
 
-        // Evento para mostrar dados do mês no PieChart E no BarChart
+        // --- LÓGICA DO MOUSE ATUALIZADA ---
+
+        // Evento para QUANDO O MOUSE ENTRA no cartão do mês
         this.monthContainer.setOnMouseEntered(event -> {
             hoverZoom.playZoomIn();
-            PieChartView.updatePieChart(mainPieChart, monthWorkouts);
-            BarChartManager.updateChartWithWorkouts(mainBarChart, monthWorkouts); // Atualiza o BarChart
+
+            // Verifica se o mês específico tem dados
+            boolean monthHasData = !monthWorkouts.isEmpty();
+
+            // Define a visibilidade dos gráficos com base na verificação
+            mainPieChart.setVisible(monthHasData);
+            statsUpdater.accept(monthWorkouts);
+
+
+
+            // Apenas atualiza os dados se houver o que mostrar
+            if (monthHasData) {
+                PieChartView.updatePieChart(mainPieChart, monthWorkouts);
+
+            }
         });
 
-        // Evento para reverter para os dados do ano no PieChart E no BarChart
+        // Evento para QUANDO O MOUSE SAI do cartão do mês
         this.monthContainer.setOnMouseExited(event -> {
             hoverZoom.playZoomOut();
-            PieChartView.updatePieChart(mainPieChart, yearWorkouts);
-            BarChartManager.updateChartWithWorkouts(mainBarChart, yearWorkouts); // Reverte o BarChart
+
+            // Verifica se o ano inteiro tem dados antes de mostrar os gráficos novamente
+            boolean yearHasData = !yearWorkouts.isEmpty();
+
+            // Restaura a visibilidade dos gráficos
+            mainPieChart.setVisible(yearHasData);
+            statsUpdater.accept(yearWorkouts);
+
+
+            // Restaura os dados para mostrar o resumo do ano
+            if (yearHasData) {
+                PieChartView.updatePieChart(mainPieChart, yearWorkouts);
+            }
         });
     }
 }

@@ -27,8 +27,10 @@
     -fx-background-position: center center;
     -fx-background-insets: 0; /* Distância que a imagem começa das bordas do container */
     -fx-background-radius: 15px;
+    
 
 }
+
 
 .chart-pie-label {
     -fx-fill: #c8c8c8; /* Substitua "red" pela cor desejada, por exemplo, "#333333" */

@@ -10,11 +10,6 @@ import io.github.tassara7.trainingsystem.view.skin.SkinnableScreen;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,9 +20,10 @@ public class ScreenManager {
     private static ScreenManager instance;
     private Stage stage;
 
+    // Record auxiliar para retornar o Root e o Controller juntos
+    private record LoadedScreen(Parent root, Object controller) {}
 
-    private ScreenManager() {
-    }
+    private ScreenManager() {}
 
     public static ScreenManager getInstance() {
         if (instance == null) {
@@ -40,93 +36,63 @@ public class ScreenManager {
         this.stage = stage;
     }
 
-
-    public void setScreen(ScreenStorage screen) throws IOException {
+    /**
+     * NOVO MÉTODO AUXILIAR: Centraliza a lógica de carregar FXML e injetar o usuário.
+     */
+    private LoadedScreen loadFxml(ScreenStorage screen) throws IOException {
         URL fxmlUrl = getClass().getResource(screen.fxmlPath());
         if (fxmlUrl == null) {
             throw new IllegalArgumentException("FXML não encontrado: " + screen.fxmlPath());
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
+        // Sempre carrega com o ResourceBundle para as traduções
+        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl, I18nManager.getBundle());
         Parent root = fxmlLoader.load();
 
-        //Injeção Automática do User
         Object controller = fxmlLoader.getController();
         if (controller instanceof UserAware) {
             ((UserAware) controller).setUser(AppData.getInstance().getCurrentUser());
         }
+        return new LoadedScreen(root, controller);
+    }
 
-
-        newScene(screen, root, controller);
+    public void setScreen(ScreenStorage screen) throws IOException {
+        LoadedScreen loaded = loadFxml(screen);
+        newScene(screen, loaded.root(), loaded.controller());
     }
 
     public void setScreen(ScreenStorage screen, LocalDate date) throws IOException {
-        URL fxmlUrl = getClass().getResource(screen.fxmlPath());
-        if (fxmlUrl == null) {
-            throw new IllegalArgumentException("FXML não encontrado: " + screen.fxmlPath());
+        LoadedScreen loaded = loadFxml(screen);
+        if (loaded.controller() instanceof ActualDate) {
+            ((ActualDate) loaded.controller()).setDate(date);
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
-        Parent root = fxmlLoader.load();
-
-
-
-        // Injeção Automática do User
-        Object controller = fxmlLoader.getController();
-        if (controller instanceof UserAware) {
-            ((UserAware) controller).setUser(AppData.getInstance().getCurrentUser());
-        }
-
-        // Injeção Automática da data
-        if (controller instanceof ActualDate) {
-            ((ActualDate) controller).setDate(date);
-        }
-
-        // Criação da cena
-        newScene(screen, root, controller);
+        newScene(screen, loaded.root(), loaded.controller());
     }
 
     public void setScreen(ScreenStorage screen, Workout workout) throws IOException {
-        URL fxmlUrl = getClass().getResource(screen.fxmlPath());
-        if (fxmlUrl == null) {
-            throw new IllegalArgumentException("FXML não encontrado: " + screen.fxmlPath());
+        LoadedScreen loaded = loadFxml(screen);
+        if (loaded.controller() instanceof WorkoutCreator) {
+            ((WorkoutCreator) loaded.controller()).setWorkout(workout);
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
-        Parent root = fxmlLoader.load();
-
-        //Injeção Automática do User
-        Object controller = fxmlLoader.getController();
-        if (controller instanceof UserAware) {
-            ((UserAware) controller).setUser(AppData.getInstance().getCurrentUser());
-        }
-
-        if (controller instanceof WorkoutCreator) {
-            ((WorkoutCreator) controller).setWorkout(workout);
-        }
-
-        newScene(screen, root, controller);
+        newScene(screen, loaded.root(), loaded.controller());
     }
 
     public void openScreenInNewWindow(ScreenStorage screen) throws IOException {
-        URL fxmlUrl = getClass().getResource(screen.fxmlPath());
-        if (fxmlUrl == null) {
-            throw new IllegalArgumentException("FXML não encontrado: " + screen.fxmlPath());
-        }
+        LoadedScreen loaded = loadFxml(screen);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
-        Parent root = fxmlLoader.load();
-
-        // Injeção automática do User
-        Object controller = fxmlLoader.getController();
-        if (controller instanceof UserAware) {
-            ((UserAware) controller).setUser(AppData.getInstance().getCurrentUser());
-        }
-
-        // Cria novo Stage (nova janela)
         Stage newStage = new Stage();
-        newStage.setTitle(screen.title()); // se tiver método title()
-        newStage.setScene(new Scene(root));
+        // CORREÇÃO: Usa o I18nManager para buscar a tradução da chave do título
+        newStage.setTitle(I18nManager.getString(screen.titleKey()));
+
+        Scene scene = new Scene(loaded.root());
+
+        // CORREÇÃO: Aplica a skin na nova janela também
+        if (loaded.controller() instanceof SkinnableScreen skinnable) {
+            SkinManager.applySkin(scene, skinnable.getScreenType());
+        }
+
+        newStage.setScene(scene);
         newStage.show();
     }
-
 
     private void newScene(ScreenStorage screen, Parent root, Object controller) {
         Scene scene = new Scene(root, screen.width(), screen.height());
@@ -137,7 +103,9 @@ public class ScreenManager {
             throw new IllegalStateException("Controller não implementa SkinnableScreen: " + controller.getClass().getSimpleName());
         }
 
-        stage.setTitle(screen.title());
+        // CORREÇÃO: Usa o I18nManager para buscar a tradução da chave do título
+        stage.setTitle(I18nManager.getString(screen.titleKey()));
+
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.show();

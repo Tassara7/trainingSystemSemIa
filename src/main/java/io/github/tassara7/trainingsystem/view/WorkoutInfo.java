@@ -17,6 +17,8 @@ public class WorkoutInfo extends VBox {
         selectedWorkout = workout;
         this.setAlignment(Pos.CENTER);
         this.getStyleClass().add("info-pane");
+
+        this.setPrefWidth(150);
     }
 
     public void showInfo(){
@@ -34,7 +36,7 @@ public class WorkoutInfo extends VBox {
         }
 
         for(BodyParts part: partsTrained){
-            Label label = new Label(part.toString());
+            Label label = new Label(I18nManager.get(part));
             label.setStyle("-fx-font-family: 'Blockhead';" +
                     "-fx-font-size: 29px;");
             label.setVisible(true);

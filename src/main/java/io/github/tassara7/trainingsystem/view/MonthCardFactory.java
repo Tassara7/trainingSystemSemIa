@@ -1,8 +1,8 @@
+// Em: src/main/java/io/github/tassara7/trainingsystem/view/MonthCardFactory.java
 package io.github.tassara7.trainingsystem.view;
 
 import io.github.tassara7.trainingsystem.model.Workout;
 import javafx.geometry.Pos;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -20,9 +20,6 @@ public class MonthCardFactory {
 
     private final VBox monthContainer;
 
-    /**
-     * O construtor agora também aceita o BarChart principal da tela.
-     */
     public MonthCardFactory(int year, int month, List<Workout> monthWorkouts, List<Workout> yearWorkouts,
                             PieChart mainPieChart,  Consumer<List<Workout>> statsUpdater) {
 
@@ -32,7 +29,7 @@ public class MonthCardFactory {
         this.monthContainer = new VBox(5, monthLabel, calendarView);
         this.monthContainer.setAlignment(Pos.CENTER);
 
-        // Configura as interações, agora passando o BarChart também
+        // A lógica de interação foi refatorada aqui
         setupInteractions(monthWorkouts, yearWorkouts, mainPieChart, statsUpdater, year, month);
     }
 
@@ -40,28 +37,29 @@ public class MonthCardFactory {
         return monthContainer;
     }
 
-    // ... (métodos createCalendarView e createMonthLabel continuam iguais)
     private CalendarView createCalendarView(int year, int month, List<Workout> monthWorkouts) {
         Set<LocalDate> workoutDays = monthWorkouts.stream()
                 .map(Workout::getDate)
                 .collect(Collectors.toSet());
+        // A classe CalendarView já foi corrigida para o alinhamento dos dias.
         return new CalendarView(year, month, workoutDays, 10, 3, 3);
     }
 
     private Label createMonthLabel(int year, int month) {
-        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM", new Locale("pt", "BR"));
+        // Usar Locale para garantir que o nome do mês seja em português.
+
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM", I18nManager.getLocale());
         String monthName = LocalDate.of(year, month, 1).format(monthFormatter);
+        // Deixa a primeira letra maiúscula.
         Label label = new Label(monthName.substring(0, 1).toUpperCase() + monthName.substring(1));
         label.setStyle("-fx-font-weight: bold; -fx-text-fill: white; -fx-font-size: 14px;");
         return label;
     }
 
-
     /**
-     * O método de interações agora também atualiza o BarChart.
+     * MÉTODO ATUALIZADO: A lógica agora é mais simples e confia no PieChartView
+     * para gerenciar a visibilidade e os dados do gráfico.
      */
-    // Em: src/main/java/io/github/tassara7/trainingsystem/view/MonthCardFactory.java
-
     private void setupInteractions(List<Workout> monthWorkouts, List<Workout> yearWorkouts,
                                    PieChart mainPieChart, Consumer<List<Workout>> statsUpdater, int year, int month) {
 
@@ -76,44 +74,27 @@ public class MonthCardFactory {
             }
         });
 
-        // --- LÓGICA DO MOUSE ATUALIZADA ---
-
         // Evento para QUANDO O MOUSE ENTRA no cartão do mês
         this.monthContainer.setOnMouseEntered(event -> {
             hoverZoom.playZoomIn();
 
-            // Verifica se o mês específico tem dados
-            boolean monthHasData = !monthWorkouts.isEmpty();
+            // Simplesmente pede para o PieChartView se atualizar com os dados do mês.
+            // Ele saberá o que fazer se a lista de treinos do mês for vazia.
+            PieChartView.updatePieChart(mainPieChart, monthWorkouts);
 
-            // Define a visibilidade dos gráficos com base na verificação
-            mainPieChart.setVisible(monthHasData);
+            // Atualiza as estatísticas também.
             statsUpdater.accept(monthWorkouts);
-
-
-
-            // Apenas atualiza os dados se houver o que mostrar
-            if (monthHasData) {
-                PieChartView.updatePieChart(mainPieChart, monthWorkouts);
-
-            }
         });
 
         // Evento para QUANDO O MOUSE SAI do cartão do mês
         this.monthContainer.setOnMouseExited(event -> {
             hoverZoom.playZoomOut();
 
-            // Verifica se o ano inteiro tem dados antes de mostrar os gráficos novamente
-            boolean yearHasData = !yearWorkouts.isEmpty();
+            // Restaura a visualização do ano inteiro, pedindo ao PieChartView para se atualizar.
+            PieChartView.updatePieChart(mainPieChart, yearWorkouts);
 
-            // Restaura a visibilidade dos gráficos
-            mainPieChart.setVisible(yearHasData);
+            // Restaura as estatísticas do ano.
             statsUpdater.accept(yearWorkouts);
-
-
-            // Restaura os dados para mostrar o resumo do ano
-            if (yearHasData) {
-                PieChartView.updatePieChart(mainPieChart, yearWorkouts);
-            }
         });
     }
 }

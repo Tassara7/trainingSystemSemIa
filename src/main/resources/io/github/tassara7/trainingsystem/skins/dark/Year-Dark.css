@@ -3,6 +3,14 @@
     -fx-year-category-tick-color: #e0e0e0; /* Cor para o eixo X (categorias) */
 }
 
+#exit, #config {
+    -fx-effect: dropshadow(three-pass-box, #151515, 2, 0, 0, 1);
+}
+#exit:pressed, #config:pressed {
+    -fx-translate-y: 3px;
+}
+
+
 .label{
     -fx-text-fill: #e6e6e6;
 }
@@ -31,4 +39,9 @@
     -fx-font-family: "Century Gothic";
     -fx-font-size: 16px;
     -fx-text-fill: #e0e0e0; /* Cor da fonte dos textos */
+}
+
+#previousYearLabel:pressed,
+#nextYearLabel:pressed{
+    -fx-translate-y: 3px;
 }

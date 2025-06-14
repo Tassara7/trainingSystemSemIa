@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <Pane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="918.0" prefWidth="1632.0" styleClass="root" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.tassara7.trainingsystem.controller.MonthWorkoutController">
@@ -25,83 +24,17 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Label fx:id="yearLabel" layoutX="325.0" layoutY="123.0" prefHeight="125.0" prefWidth="318.0" text="YEAR">
-         <font>
-            <Font name="Century Gothic" size="96.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Label>
       <Label fx:id="monthLabel" alignment="CENTER" layoutX="172.0" layoutY="196.0" prefHeight="125.0" prefWidth="514.0" text="MONTH">
          <font>
             <Font name="Century Gothic" size="54.0" />
          </font>
       </Label>
-      <Label fx:id="weekDays" layoutX="210.0" layoutY="302.0" prefHeight="64.0" prefWidth="535.0" text="S     M     T     W     T      F      S">
+      <Label fx:id="weekDays" layoutX="210.0" layoutY="302.0" prefHeight="64.0" prefWidth="535.0" text="%month.view.week_days">
          <font>
             <Font name="Century Gothic" size="34.0" />
          </font>
       </Label>
-      <VBox fx:id="infoPane" layoutX="635.0" layoutY="378.0" prefHeight="460.0" prefWidth="229.0" styleClass="InfoPane">
-         <children>
-            <Label fx:id="infoLabel1" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel2" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel3" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel4" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel5" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel6" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font>
-            </Label>
-            <Label fx:id="infoLabel7" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font name="Blockhead" size="29.0" />
-               </font></Label>
-            <Label fx:id="infoLabel8" alignment="CENTER" prefHeight="49.0" prefWidth="240.0" text="Label">
-               <font>
-                  <Font size="29.0" />
-               </font></Label>
-         </children>
-      </VBox>
       <PieChart fx:id="pieChart" layoutX="934.0" layoutY="203.0" prefHeight="600.0" prefWidth="600.0" />
-      <Label fx:id="nextYearLabel" layoutX="550.0" layoutY="138.0" prefHeight="64.0" prefWidth="59.0" text="&gt;">
-         <font>
-            <Font size="66.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Label>
-      <Label fx:id="previousYearLabel" layoutX="266.0" layoutY="138.0" prefHeight="64.0" prefWidth="59.0" text="&lt;">
-         <font>
-            <Font size="66.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Label>
       <Label fx:id="nextMonthLabel" layoutX="590.0" layoutY="224.0" prefHeight="64.0" prefWidth="59.0" text="&gt;">
          <font>
             <Font size="47.0" />
@@ -147,5 +80,29 @@
             <Image url="@../images/config-icon.png" />
          </image>
       </ImageView>
+      <Label fx:id="yearLabel" alignment="CENTER" layoutX="271.0" layoutY="123.0" prefHeight="125.0" prefWidth="318.0" text="YEAR">
+         <font>
+            <Font name="Century Gothic" size="96.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="nextYearLabel" layoutX="550.0" layoutY="138.0" prefHeight="64.0" prefWidth="59.0" text="&gt;">
+         <font>
+            <Font size="66.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
+      <Label fx:id="previousYearLabel" layoutX="266.0" layoutY="138.0" prefHeight="64.0" prefWidth="59.0" text="&lt;">
+         <font>
+            <Font size="66.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Label>
    </children>
 </Pane>

@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Set;
@@ -46,19 +47,30 @@ public class CalendarView extends GridPane {
     }
 
     public void createCalendar(int circleSize, int fontSize) {
-        this.setAlignment(Pos.TOP_CENTER); // Garante que o conteúdo fique no topo
-        this.setPrefHeight((circleSize * 2 + getVgap()) * 6 + 20); // Altura para até 6 semanas
+        this.setAlignment(Pos.TOP_CENTER);
+        this.setPrefHeight((circleSize * 2 + getVgap()) * 6 + 20);
         this.setMinHeight(this.getPrefHeight());
 
         YearMonth yearMonth = YearMonth.of(year, month);
         int totalDays = yearMonth.lengthOfMonth();
-        int firstDayOfWeek = LocalDate.of(year, month, 1).getDayOfWeek().getValue(); // 1 = Monday, 7 = Sunday
+
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Pega o Dia da Semana (ex: SUNDAY)
+        DayOfWeek firstDayOfMonth = LocalDate.of(year, month, 1).getDayOfWeek();
+
+        // Calcula quantos dias "em branco" (spacers) precisamos no início do mês.
+        // Usamos o módulo (%) para alinhar com uma semana que começa no Domingo.
+        // Domingo (valor 7) % 7 = 0 spacers.
+        // Segunda (valor 1) % 7 = 1 spacer.
+        // Sábado (valor 6) % 7 = 6 spacers.
+        int spacers = firstDayOfMonth.getValue() % 7;
+        // ----------------------------
 
         int col = 0;
         int row = 0;
 
         // Preenche os dias antes do primeiro do mês com espaços
-        for (int i = 0; i < firstDayOfWeek - 1; i++) {
+        for (int i = 0; i < spacers; i++) {
             StackPane spacer = new StackPane();
             spacer.setMinSize(circleSize * 2, circleSize * 2);
             spacer.setPrefSize(circleSize * 2, circleSize * 2);
@@ -66,13 +78,14 @@ public class CalendarView extends GridPane {
             col++;
         }
 
+        // Preenche os dias do mês
         for (int day = 1; day <= totalDays; day++) {
             LocalDate currentDate = LocalDate.of(year, month, day);
 
             StackPane dayPane = getDayCircle(currentDate, day, circleSize, fontSize);
             dayPane.getStyleClass().add("day-pane");
 
-
+            // Configura os eventos de mouse
             dayPane.setOnMouseClicked(e -> {
                 if (daySelectionListener != null) {
                     try {
@@ -84,7 +97,7 @@ public class CalendarView extends GridPane {
             });
             dayPane.setOnMouseEntered(e -> {
                 if (daySelectionListener != null) {
-                    daySelectionListener.onDaySelected(currentDate);
+                    daySelectionListener.onDaySelected(currentDate, e);
                 }
             });
             dayPane.setOnMouseExited(e -> {
@@ -129,7 +142,7 @@ public class CalendarView extends GridPane {
             });
             dayPane.setOnMouseEntered(e -> {
                 if(daySelectionListener != null) {
-                    daySelectionListener.onDaySelected(currentDate);
+                    daySelectionListener.onDaySelected(currentDate, e);
                 }
             });
             dayPane.setOnMouseExited(e -> {

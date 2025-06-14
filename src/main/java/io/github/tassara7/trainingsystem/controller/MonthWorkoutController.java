@@ -1,5 +1,6 @@
 package io.github.tassara7.trainingsystem.controller;
 
+
 import io.github.tassara7.trainingsystem.model.User;
 import io.github.tassara7.trainingsystem.model.Workout;
 import io.github.tassara7.trainingsystem.service.WorkoutFilter;
@@ -16,13 +17,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Popup;
+import javafx.stage.Window;
+import java.util.Optional;
+import javafx.geometry.Bounds;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class MonthWorkoutController implements UserAware, ActualDate, DaySelectionListener, SkinChangeListener, SkinnableScreen {
+public class MonthWorkoutController implements UserAware, ActualDate, DaySelectionListener, SkinChangeListener, SkinnableScreen, LanguageChangeListener {
 
     //<editor-fold desc="FXML Fields">
     @FXML public Pane rootPane;
@@ -37,8 +43,8 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
     @FXML private Label previousYearLabel;
     @FXML private Label nextMonthLabel;
     @FXML private Label previousMonthLabel;
-    @FXML private VBox infoPane;
     @FXML private PieChart pieChart;
+    @FXML private Label weekDays;
     //</editor-fold>
 
     // --- Estado do Controller ---
@@ -47,7 +53,7 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
 
     // --- Gerentes/Helpers ---
     private CalendarManager calendarManager;
-    private WorkoutHoverDetailManager detailManager;
+    private WorkoutPopupManager popupManager;
 
 
 
@@ -55,6 +61,10 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         // 1. Cria as dependências e os gerentes
         CalendarAnimation calendarAnimation = new CalendarAnimation(calendar);
         this.calendarManager = new CalendarManager(calendar, this, calendarAnimation);
+        this.popupManager = new WorkoutPopupManager(calendar);
+        I18nManager.registerListener(this);
+
+
 
 
 
@@ -64,14 +74,13 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         // 3. Configura a UI que não depende de dados do usuário
         setupStaticUIComponents();
         setChangeDateLabels();
+
     }
 
     @Override
     public void setUser(User user) {
         this.currentUser = user;
 
-        // Cria o gerente que depende dos dados do usuário
-        this.detailManager = new WorkoutHoverDetailManager(infoPane, currentUser);
 
         // 4. Inicia a primeira renderização da tela
         rootPane.setStyle(WallpaperUtil.buildWallpaperStyle());
@@ -106,21 +115,34 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
      * Orquestra a atualização completa da view sem animação.
      */
     private void updateView() {
-        if (currentDate == null) {
-            currentDate = LocalDate.now();
+        if (currentDate == null || currentUser == null) {
+            return; // Evita erros se os dados ainda não estiverem prontos
         }
 
+
+
+
+        // --- LÓGICA DE TRADUÇÃO ---
+        // Traduz as labels estáticas
+        yearLabel.setText(String.valueOf(currentDate.getYear()));
+        todayLabel.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM")));
+        weekDays.setText(I18nManager.getString("month.view.week_days"));
+
+
+        // Traduz o nome do mês usando o Locale correto
+        String translatedMonth = currentDate.format(DateTimeFormatter.ofPattern("MMMM", I18nManager.getLocale()));
+        monthLabel.setText(translatedMonth.toUpperCase());
+
+        // --- LÓGICA DE DADOS ---
         List<Workout> monthWorkouts = WorkoutFilter.filterByMonthAndYear(
                 currentUser.getWorkouts(),
                 currentDate.getMonthValue(),
                 currentDate.getYear()
         );
 
-        yearLabel.setText(String.valueOf(currentDate.getYear()));
-        monthLabel.setText(String.valueOf(currentDate.getMonth()));
-
-        updatePieChart(monthWorkouts);
+        // Atualiza o calendário e o PieChart. O PieChart será traduzido dentro do seu próprio método.
         calendarManager.displayMonth(currentDate, monthWorkouts);
+        PieChartView.updatePieChart(pieChart, monthWorkouts);
     }
 
     /**
@@ -136,7 +158,8 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         );
 
         yearLabel.setText(String.valueOf(currentDate.getYear()));
-        monthLabel.setText(String.valueOf(currentDate.getMonth()));
+        String translatedMonth = currentDate.format(DateTimeFormatter.ofPattern("MMMM", I18nManager.getLocale()));
+        monthLabel.setText(translatedMonth.toUpperCase());
 
         updatePieChart(monthWorkouts);
         calendarManager.animateToMonth(currentDate, monthWorkouts);
@@ -169,14 +192,22 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
                 );
     }
 
+
+
     @Override
-    public void onDaySelected(LocalDate date) {
-        detailManager.handleDaySelected(date);
+    public void onDaySelected(LocalDate date, MouseEvent event) {
+        Optional<Workout> workoutOpt = currentUser.getWorkouts().stream()
+                .filter(workout -> workout.getDate().equals(date))
+                .findFirst();
+
+        // Apenas diz ao gerente para mostrar o popup se o treino existir
+        workoutOpt.ifPresent(popupManager::show);
     }
 
     @Override
     public void onDayDeselected(LocalDate date) {
-        detailManager.handleDayDeselected();
+        // Apenas diz ao gerente para esconder o popup
+        popupManager.hide();
     }
 
     @Override
@@ -191,7 +222,10 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         this.currentDate = date;
         if (currentUser != null) {
             updateView();
+            onLanguageChanged();
         }
+
+
     }
 
     @Override
@@ -199,9 +233,7 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         return ScreenType.MONTH;
     }
 
-    /**
-     * Método auxiliar para navegação.
-     */
+
     private void navigateTo(ScreenStorage screen, boolean newWindow) {
         try {
             if (newWindow) {
@@ -212,5 +244,18 @@ public class MonthWorkoutController implements UserAware, ActualDate, DaySelecti
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void onLanguageChanged() {
+        // Atualiza todos os textos da tela buscando as novas traduções
+
+
+        // Para textos dinâmicos (como o nome do mês), precisamos buscar a tradução e o formato
+        updateView();
+
+
+        // Atualiza o título da janela
+
     }
 }

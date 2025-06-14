@@ -7,6 +7,7 @@ import io.github.tassara7.trainingsystem.service.WorkoutFilter;
 import io.github.tassara7.trainingsystem.service.WorkoutStatsCalculator;
 import io.github.tassara7.trainingsystem.view.*;
 import io.github.tassara7.trainingsystem.view.skin.ScreenType;
+import io.github.tassara7.trainingsystem.view.skin.SkinManager;
 import io.github.tassara7.trainingsystem.view.skin.SkinnableScreen;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -27,7 +28,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class YearWorkoutController implements ActualDate, SkinnableScreen, LanguageChangeListener {
+public class YearWorkoutController implements ActualDate, SkinnableScreen, LanguageChangeListener, SkinChangeListener {
 
     @FXML
     private Label nextYearLabel, previousYearLabel;
@@ -52,6 +53,8 @@ public class YearWorkoutController implements ActualDate, SkinnableScreen, Langu
         rootPane.setStyle(WallpaperUtil.buildWallpaperStyle());
         pieChart.setAnimated(false);
         I18nManager.registerListener(this);
+
+        SkinManager.registerListener(this);
 
         setupNavigationActions();
         updateYearView();
@@ -128,6 +131,12 @@ public class YearWorkoutController implements ActualDate, SkinnableScreen, Langu
             }
         }
     }
+    public void onSkinChanged() {
+        rootPane.setStyle(WallpaperUtil.buildWallpaperStyle());
+        SkinManager.applySkin(rootPane.getScene(), getScreenType());
+        updateYearView();
+    }
+
 
 
     private void setupNavigationActions() {
